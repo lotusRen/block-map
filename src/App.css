@@ -1,7 +1,7 @@
-#root{
-	height: 100%;
-}
+
 #map{
-	height:700px;
+	height:100%;
+	width:76%;
+	float:left;
 }
 
