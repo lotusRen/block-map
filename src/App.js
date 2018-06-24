@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import Filter from './filter.js';
+import List from './list.js';
 import $ from 'jquery';
 
 class App extends Component {	
@@ -60,15 +61,14 @@ class App extends Component {
 	    }			   
 	    that.map.fitBounds(bounds); 			
 	}			
-	populateInfoWindow(marker, infowindow){
+	populateInfoWindow(marker, infowindow){           //生成信息窗口函数
 		var that=this;
 		 if (infowindow.marker !==marker) {		 	
 			 infowindow.setContent('');
 	         infowindow.marker = marker;
 	         infowindow.addListener('closeclick', function() {
 	            infowindow.marker = null;
-	          });
-	          
+	         });	          
 	        var streetViewService = new window.google.maps.StreetViewService();      //新建一个街景
             var radius = 50;
             function getStreetView(data, status) {
@@ -90,23 +90,23 @@ class App extends Component {
             }
           }      
           that.infofromwiki(marker.title);                       //调用维基百科内容
-          streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
-          
+          streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);          
           infowindow.open(that.map, marker);
         }		
 	}
 	
-	infofromwiki(keyword){                   //获取维基百科的内容
+	infofromwiki(keyword,infowindow){                   //获取维基百科的内容
 		$.ajax({
             url: "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch="+keyword+"&prop=info&inprop=url&utf8=&format=json",
             dataType:"jsonp",
             async:'true',
             success:function(response){
             		var box=document.getElementById('infoFromWiki');
-            		if(box){
+            		if(box && response.query.search){
             			box.innerHTML=response.query.search[0].snippet;
-            		}
-            		
+            		}else if(box){
+            			box.innerText="抱歉没能找到相关介绍！";
+            		}           		
             },
             error:function(){
                 //获取出错了
@@ -164,8 +164,9 @@ class App extends Component {
 		return (
 			 <React.Fragment>	 		
 			 		<div id="map" role="application" ></div>		 		
-				<Filter locations={this.oldLocations}  filterFn={this.filterLocations} markers={this.markers} populateInfoWindow={this.populateInfoWindow}  
-				map={this.map} infowindow={this.state.largeInfowindow} />
+					<Filter locations={this.oldLocations}  filterFn={this.filterLocations}  >
+						<List locations={this.state.locations} markers={this.markers}   populateInfoWindow={this.populateInfoWindow}  infowindow={this.state.largeInfowindow} />
+					</Filter>
 			</React.Fragment>
 		)
 	}
