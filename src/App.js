@@ -68,12 +68,13 @@ class App extends Component {
 	         infowindow.marker = marker;
 	         infowindow.addListener('closeclick', function() {
 	            infowindow.marker = null;
-	         });	          
+	         });
+	          
 	        var streetViewService = new window.google.maps.StreetViewService();      //新建一个街景
             var radius = 50;
             function getStreetView(data, status) {
             if (status === window.google.maps.StreetViewStatus.OK) {   
-                infowindow.setContent('<div>' + marker.title + '</div><div id="pano"></div><p id="infoFromWiki"></p>');
+                infowindow.setContent('<div style="font-size:16px;  font-weight:300 ;">' + marker.title + '</div><div id="pano"></div><p id="infoFromWiki">loading...</p>');
                 var panoramaOptions = {
                   position: marker.position,
                   pov: {
@@ -85,8 +86,8 @@ class App extends Component {
                 document.getElementById('pano'), panoramaOptions);
                
             } else {
-              infowindow.setContent('<div>' + marker.title + '</div>' +
-                '<div>No Street View Found</div><p id="infoFromWiki"></p>');
+              infowindow.setContent('<div style="font-size:16px;  font-weight:300 ;">' + marker.title + '</div>' +
+                '<div>No Street View Found</div><p id="infoFromWiki">loading...</p>');
             }
           }      
           that.infofromwiki(marker.title);                       //调用维基百科内容
@@ -95,7 +96,7 @@ class App extends Component {
         }		
 	}
 	
-	infofromwiki(keyword,infowindow){                   //获取维基百科的内容
+	infofromwiki(keyword){                   //获取维基百科的内容
 		$.ajax({
             url: "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch="+keyword+"&prop=info&inprop=url&utf8=&format=json",
             dataType:"jsonp",
@@ -115,6 +116,7 @@ class App extends Component {
         });
 	}
 	componentDidMount(){
+		
 		var that=this;
 		window.addEventListener('load',function(){	
 			that.mapsHeightFn();			              //设置地图的高度
