@@ -47,13 +47,13 @@ class App extends Component {
 	            		item.setAnimation(null);          //清除所有marker的动画
 	            });
 	            this.setAnimation(window.google.maps.Animation.BOUNCE);
-	            var lis=document.getElementsByTagName('li');
-	            var li='';                //用来保存当前marker对应的li
-				for(var i=0;i<lis.length;i++){
-					lis[i].style.background="white";
-					if(lis[i].innerText===this.title){
-						li=lis[i];
-						li.style.background="#ccc";
+	            var as=document.querySelectorAll('li a');
+	            var a='';                //用来保存当前marker对应的li
+				for(var i=0;i<as.length;i++){
+					as[i].style.background="white";
+					if(as[i].innerText===this.title){
+						a=as[i];
+						a.style.background="#ccc";
 					}						
 				}		            
 	        });
@@ -74,7 +74,7 @@ class App extends Component {
             var radius = 50;
             function getStreetView(data, status) {
             if (status === window.google.maps.StreetViewStatus.OK) {   
-                infowindow.setContent('<div style="font-size:16px;  font-weight:300 ;">' + marker.title + '</div><div id="pano"></div><p id="infoFromWiki">loading...</p>');
+                infowindow.setContent('<div style="font-size:16px;  font-weight: ;">' + marker.title + '</div><div id="pano"></div><p id="infoFromWiki">loading...</p>');
                 var panoramaOptions = {
                   position: marker.position,
                   pov: {
@@ -86,7 +86,7 @@ class App extends Component {
                 document.getElementById('pano'), panoramaOptions);
                
             } else {
-              infowindow.setContent('<div style="font-size:16px;  font-weight:300 ;">' + marker.title + '</div>' +
+              infowindow.setContent('<div style="font-size:16px;  font-weight: ;">' + marker.title + '</div>' +
                 '<div>No Street View Found</div><p id="infoFromWiki">loading...</p>');
             }
           }      
@@ -116,7 +116,6 @@ class App extends Component {
         });
 	}
 	componentDidMount(){
-		
 		var that=this;
 		window.addEventListener('load',function(){	
 			that.mapsHeightFn();			              //设置地图的高度
