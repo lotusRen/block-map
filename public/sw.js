@@ -1,4 +1,4 @@
-var cacheNM = "map-cache-v077";
+var cacheNM = "map-cache-v02";
 var urlsToCache=[
 	'/public.index.html',
 	'/src/App.js',
@@ -13,20 +13,15 @@ var urlsToCache=[
 self.addEventListener('install',function(event){	
 	event.waitUntil(
 		caches.open(cacheNM).then(function(cache){
-			var url='https://maps.googleapis.com/maps/api/js?key=AIzaSyCVkVzXys5TdQXFmn_V-_j6V0rDp41rrhM&v=3';
-			fetchData(url,cache);
-			
 			return cache.addAll(urlsToCache);			
 		}).catch(function(err){
 			console.log(err);
 		})
 		
-	);
-	
+	);	
 });
 
-self.addEventListener('activate',function(event){
-		
+self.addEventListener('activate',function(event){		
 	event.waitUntil(
 		caches.keys().then(function(cacheNames){
 			return Promise.all(				
@@ -48,21 +43,13 @@ self.addEventListener('activate',function(event){
 self.addEventListener('fetch',function(event){
 	event.respondWith(
 	    caches.match(event.request).then(function(response) {	    		
-	    			return response || fetch(event.request);
-			
+	    			return response || fetch(event.request).catch((err)=>{
+	    				return '该资源无法缓存哦！'+err;
+	    			});			
 	    })
 	  );
 });
 
 
-function fetchData(url,cache){
-	fetch(url,{mode:'no-cors'}).then(function(res){                  
-				return res;
-			}).then(function(data){
-				cache.put(url,data);
-			}).catch(function(e){
-				console.log(e)
-			});
-}
 
 

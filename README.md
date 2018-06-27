@@ -1,3 +1,24 @@
+
+1、先在文件my-app下，操作npm install 下载相关依赖
+2、操作npm start 运行程序
+3、本项目中使用的第三方api，是维基百科的api
+4、输入框内，输入景点对应的 汉字、拼音、首字母的缩写（例如：梧桐山、wutongshang的一部分（wut）或全部，wts）可以进行筛选；
+	ps:不能跳着输入，例如：wuts不会成功
+5、点击列表栏可以找到对应的地图标签，反过来亦然；
+6、屏幕左上角有一个菜单的按钮，可以控制侧边栏的隐藏和显示
+
+
+
+
+
+
+
+
+
+
+
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>

@@ -10,11 +10,11 @@ class App extends Component {
 		this.markers=[];                              //用来保存所有的标记
 		this.map={};
 		this.oldLocations=[                              //存一个不变的值，后期从中筛选
-	          {title: '梧桐山', location: {lat: 22.579332, lng: 114.219408},pingyin:'wutongshan',abbreviation:'wts'},
-	          {title: '大梅沙', location: {lat: 22.594822, lng: 114.304446},pingyin:'dameisha',abbreviation:'dms'},
-	          {title: '世界之窗', location: {lat: 22.536398, lng: 113.973176},pingyin:'shijiezhichuang',abbreviation:'sjzc'},
-	          {title: '凤凰山', location: {lat: 22.671686, lng: 113.855259},pingyin:'fenghuangshan',abbreviation:'fhs'},
-	          {title: '莲花山公园', location: {lat: 22.554571, lng: 114.057378},pingyin:'lianhuashangongyuan',abbreviation:'lhsgy'}
+	          {title: '梧桐山国家森林公园', location: {lat: 22.579332, lng: 114.219408},pingyin:'wutongshanguojiasenlingongyuan',abbreviation:'wtsgjslgy'},
+	          {title: '大梅沙海滨公园', location: {lat: 22.594822, lng: 114.304446},pingyin:'dameishahaibingongyuan',abbreviation:'dmshbgy'},
+	          {title: '深圳世界之窗', location: {lat: 22.536398, lng: 113.973176},pingyin:'shenzhenshijiezhichuang',abbreviation:'szsjzc'},	          
+	          {title: '莲花山公园', location: {lat: 22.554571, lng: 114.057378},pingyin:'lianhuashangongyuan',abbreviation:'lhsgy'},
+	           {title: '深圳羊台山森林公园', location: {lat: 22.649223, lng: 113.959594},pingyin:'yangtaishangongyuan',abbreviation:'szytsgy'}        
 	       ];
 		this.state={
 			locations : this.oldLocations,
@@ -47,6 +47,8 @@ class App extends Component {
 	            		item.setAnimation(null);          //清除所有marker的动画
 	            });
 	            this.setAnimation(window.google.maps.Animation.BOUNCE);
+	            
+	            setTimeout(()=>this.setAnimation(null),300);
 	            var as=document.querySelectorAll('li a');
 	            var a='';                //用来保存当前marker对应的li
 				for(var i=0;i<as.length;i++){
@@ -74,7 +76,7 @@ class App extends Component {
             var radius = 50;
             function getStreetView(data, status) {
             if (status === window.google.maps.StreetViewStatus.OK) {   
-                infowindow.setContent('<div style="font-size:16px;  font-weight: ;">' + marker.title + '</div><div id="pano"></div><p id="infoFromWiki">loading...</p>');
+                infowindow.setContent('<h3>' + marker.title + '</h3><div id="pano"></div><p id="infoFromWiki">loading...</p>');
                 var panoramaOptions = {
                   position: marker.position,
                   pov: {
@@ -86,7 +88,7 @@ class App extends Component {
                 document.getElementById('pano'), panoramaOptions);
                
             } else {
-              infowindow.setContent('<div style="font-size:16px;  font-weight: ;">' + marker.title + '</div>' +
+              infowindow.setContent('<h3>' + marker.title + '</h3>' +
                 '<div>No Street View Found</div><p id="infoFromWiki">loading...</p>');
             }
           }      
@@ -98,16 +100,17 @@ class App extends Component {
 	
 	infofromwiki(keyword){                   //获取维基百科的内容
 		$.ajax({
-            url: "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch="+keyword+"&prop=info&inprop=url&utf8=&format=json",
+            url: "https://zh.wikipedia.org/w/api.php?action=query&list=search&srsearch="+keyword+"&prop=info&inprop=url&utf8=&format=json",
             dataType:"jsonp",
             async:'true',
             success:function(response){
+            	console.log(response)
             		var box=document.getElementById('infoFromWiki');
-            		if(box && response.query.search){
+            		if(box && response.query&&response.query.search){
             			box.innerHTML=response.query.search[0].snippet;
             		}else if(box){
             			box.innerText="抱歉没能找到相关介绍！";
-            		}           		
+            		}    
             },
             error:function(){
                 //获取出错了
@@ -115,8 +118,17 @@ class App extends Component {
             }
         });
 	}
+	componentWillMount(){		
+    		if('serviceWorker' in navigator){
+    			navigator.serviceWorker.register('./sw.js',{scope:'/my-app/'}).then(function(reg){   								
+    			}).catch(function(err){
+    				console.log(err);
+    			});    			
+    		}		
+		$('<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCVkVzXys5TdQXFmn_V-_j6V0rDp41rrhM&v=3"></script>').appendTo('body');
+	}
 	componentDidMount(){
-		var that=this;
+		var that=this;		
 		window.addEventListener('load',function(){	
 			that.mapsHeightFn();			              //设置地图的高度
 			 that.setState({
@@ -134,12 +146,11 @@ class App extends Component {
 		var theMap=document.getElementById('map');
 		var filterBar=document.getElementById('filter');
 		theMap.style.height=filterBar.offsetHeight+"px";		
-			filterBar.style.left='0';	
-			
+			filterBar.style.left='0';				
 	}
 	filterLocations(obj){                 //用来改变筛选完后的地址				
 		 this.setState({
-		 	locations : obj
+		 	locations : obj,	 	
 		 });
 	}	
 	componentDidUpdate(){                      
@@ -164,7 +175,7 @@ class App extends Component {
     render() { 
 		return (
 			 <React.Fragment>	 		
-			 		<div id="map" role="application" ></div>		 		
+			 		<div id="map" role="application" ><p style={{width:'100%',lineHeight:'300px',textAlign:'center' ,fontSize:'24px'}}>Loading...</p></div>		 		
 					<Filter locations={this.oldLocations}  filterFn={this.filterLocations}  >
 						<List locations={this.state.locations} markers={this.markers}   populateInfoWindow={this.populateInfoWindow}  infowindow={this.state.largeInfowindow} />
 					</Filter>

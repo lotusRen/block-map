@@ -12,6 +12,7 @@ class List extends Component{
 			return item.title===e.target.innerText;
 		});
 		marker[0].setAnimation(window.google.maps.Animation.BOUNCE);
+		setTimeout(()=>marker[0].setAnimation(null));
 		this.props.populateInfoWindow(marker[0],that.props.infowindow);	
 		var as=document.querySelectorAll('li a');
 		for(var i=0;i<as.length;i++){
@@ -23,11 +24,10 @@ class List extends Component{
 		return (			
 			 <React.Fragment>	 				 	
 			 	{
-			 		this.props.locations.length !==0 ? this.props.locations.map(item => <li key={item.title} id={item.id} onClick={this.listClickFn}><a href="javascript:void(0)">{item.title}</a></li>) : <li><a>暂时还没有推荐该景点哦!</a></li>
+			 		this.props.locations.length !==0 ? this.props.locations.map(item => <li key={item.title} id={item.id} onClick={this.listClickFn} onTouchStart={this.listClickFn}><a href="javascript:void(0)">{item.title}</a></li>) : <li><a>暂时还没有推荐该景点哦!</a></li>
 			 	}
 			 </React.Fragment>	 	
 		)
-	}
-	
+	}	
 }
 export default List;

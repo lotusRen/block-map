@@ -48,16 +48,14 @@ class Filter extends Component{
 	render(){
 		return(
 			<div id="filter">
-				<button id="menubtn" onClick={this.hideOrShowMenu} tabIndex="3" title="点我控制侧边框是否显示哦！"><span></span><span></span><span></span></button>
+				<button id="menubtn" onClick={this.hideOrShowMenu} onTouchStart={this.hideOrShowMenu}   tabIndex="3" title="点我控制侧边框是否显示哦！"><span></span><span></span><span></span></button>
 				<h3>筛选你的景点</h3>
-				<input type='text'  placeholder="输入你喜欢的景点进行筛选" onChange={this.filterFn}/>
+				<input type='text'  placeholder="输入你喜欢的景点进行筛选" onChange={this.filterFn} aria-label="输入景点"/>
 				
-				<ul>
-				{this.props.children}
+				<ul role="listbox">
+					{this.props.children}
 				</ul>
-				{/*<ul>
-				<List locations={this.locations}  markers={this.props.markers}  populateInfoWindow={this.props.populateInfoWindow} />
-				</ul>*/}
+				
 			</div>
 		)
 		
